@@ -1,6 +1,6 @@
 # Source code for GAtt
 
-This repository is the official implementation of [Revisiting Attention Weights as Interpretations of Message-Passing Neural Networks](https://arxiv.org/abs/2030.12345](https://arxiv.org/abs/2406.04612)). In the paper, we show that GAtt provides a better way to calculate edge attribution scores from attention weights in attention-based GNNs!
+This repository is the official implementation of [Revisiting Attention Weights as Interpretations of Message-Passing Neural Networks](https://arxiv.org/abs/2406.04612). In the paper, we show that GAtt provides a better way to calculate edge attribution scores from attention weights in attention-based GNNs!
 
 ## We have a Dockerfile for running locally:
 
