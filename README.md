@@ -25,3 +25,18 @@ which should be enough to run the demos.
 - Demo on the Cora dataset on how to use the `get_gatt` function
 - Demo on the BAShapes (generated from `torch_geometric.datasets.ExplainerDataset`): Visualizations of **GAtt** and comparison to AvgAtt
 - Demo on the Infection dataset (generated from the code in [the original authors' repo](https://github.com/m30m/gnn-explainability)): Visualizations of **GAtt** and comparison to AvgAtt
+
+## Results for Infection dataset
+
+This is one of the results in the demo notebooks:
+
+Figure (left to right)
+- Ground truth explanation (blue edges) for the target node (orange node)
+- Edge attribution from **GAtt**
+- Edge attribution from AvgAtt (averaging over the layers)
+
+<p float="left">
+  <img src="/Figures/Infection_3L_ground_truth.png" width="300" />
+  <img src="/Figures/Infection_3L_GAtt.png" width="300" /> 
+  <img src="/Figures/Infection_3L_AvgAtt.png" width="300" />
+</p>
