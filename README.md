@@ -42,3 +42,7 @@ Figure (left to right)
 </p>
 
 The figures show that the edge attribution scores in GAtt is more aligned with the ground truth explanation edges compared to just averaging over the GAT layers.
+
+
+## Note on batch computations of GAtt
+This will be updated soon...
