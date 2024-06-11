@@ -1,5 +1,27 @@
-# GAtt
+# Source code for GAtt
 
-Source code for the GAtt method in "Revisiting Attention Weights as Interpretations of Message-Passing Neural Networks".
+This repository is the official implementation of [Revisiting Attention Weights as Interpretations of Message-Passing Neural Networks](https://arxiv.org/abs/2030.12345](https://arxiv.org/abs/2406.04612)). In the paper, we show that GAtt provides a better way to calculate edge attribution scores from attention weights in attention-based GNNs!
 
-Main content will be uploaded very soon.
+## We have a Dockerfile for running locally:
+
+Just clone the repo, and build the docker image by:
+
+```bash
+docker build <directory_to_cloned_repo> --tags <your:tags>
+```
+
+### If you don't want Docker...
+
+The code is tested in...
+- Python 3.10.13
+- Pytorch 2.0.1+cu117
+- Pytorch Geometric 2.3.1
+
+which should be enough to run the demos.
+
+## Provided in this repo are...
+1. Source code for **GAtt**
+2. Demos
+- Demo on the Cora dataset on how to use the `get_gatt` function
+- Demo on the BAShapes (generated from `torch_geometric.datasets.ExplainerDataset`): Visualizations of **GAtt** and comparison to AvgAtt
+- Demo on the Infection dataset (generated from the code in [the original authors' repo](https://github.com/m30m/gnn-explainability)): Visualizations of **GAtt** and comparison to AvgAtt
