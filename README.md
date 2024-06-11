@@ -40,3 +40,5 @@ Figure (left to right)
   <img src="/Figures/Infection_3L_GAtt.png" width="250" /> 
   <img src="/Figures/Infection_3L_AvgAtt.png" width="250" />
 </p>
+
+The figures show that the edge attribution scores in GAtt is more aligned with the ground truth explanation edges compared to just averaging over the GAT layers.
