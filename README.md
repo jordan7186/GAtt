@@ -36,7 +36,7 @@ Figure (left to right)
 - Edge attribution from AvgAtt (averaging over the layers)
 
 <p float="left">
-  <img src="/Figures/Infection_3L_ground_truth.png" width="300" />
-  <img src="/Figures/Infection_3L_GAtt.png" width="300" /> 
-  <img src="/Figures/Infection_3L_AvgAtt.png" width="300" />
+  <img src="/Figures/Infection_3L_ground_truth.png" width="200" />
+  <img src="/Figures/Infection_3L_GAtt.png" width="200" /> 
+  <img src="/Figures/Infection_3L_AvgAtt.png" width="200" />
 </p>
