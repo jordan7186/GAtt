@@ -22,7 +22,7 @@ which should be enough to run the demos.
 ## Provided in this repo are...
 1. Source code for **GAtt**
 2. Demos
-- Demo on the Cora dataset on how to use the `get_gatt` function
+- Demo on the Cora dataset on how to use the `get_gatt` and the `get_gatt_batch` function
 - Demo on the BAShapes (generated from `torch_geometric.datasets.ExplainerDataset`): Visualizations of **GAtt** and comparison to AvgAtt
 - Demo on the Infection dataset (generated from the code in [the original authors' repo](https://github.com/m30m/gnn-explainability)): Visualizations of **GAtt** and comparison to AvgAtt
 
@@ -42,7 +42,3 @@ Figure (left to right)
 </p>
 
 The figures show that the edge attribution scores in GAtt is more aligned with the ground truth explanation edges compared to just averaging over the GAT layers.
-
-
-## Note on batch computations of GAtt
-This will be updated soon...
