@@ -13,7 +13,11 @@ from torch_geometric.utils import (
 
 
 def return_edges_in_k_hop(
-    data: Data, target_idx: int, hop: int, self_loops: bool = False
+    data: Data,
+    target_idx: int,
+    hop: int,
+    self_loops: bool = False,
+    return_as_tensor: bool = False,
 ) -> List[Tuple[int, int]]:
     r"""Returns all edges in :obj:`data` that are connected to :obj:`target_idx`
     and lie within a :obj:`hop` distance.
@@ -38,7 +42,10 @@ def return_edges_in_k_hop(
         relabel_nodes=True,
     )
 
-    return edge_index[:, inv].t().tolist()
+    if return_as_tensor:
+        return edge_index[:, inv]
+    else:
+        return edge_index[:, inv].t().tolist()
 
 
 @torch.no_grad()
@@ -222,3 +229,100 @@ def get_avgatt(
         )
 
     return avgatt_list, edges_in_k_hop
+
+
+def gatt_batch(
+    ref_node: int,
+    num_of_hops: int,
+    att_matrix_dict: Dict,
+    correction_matrix_dict: Dict,
+    sparse: bool = False,
+) -> torch.Tensor:
+    num_nodes = att_matrix_dict[0].shape[0]
+    # Set the select matrix
+    if sparse:
+        indices = torch.tensor(
+            [
+                [ref_node] * att_matrix_dict[0].shape[1],
+                list(range(att_matrix_dict[0].shape[1])),
+            ]
+        )
+        values = torch.ones(att_matrix_dict[0].shape[1])
+        select_matrix = torch.sparse_coo_tensor(
+            indices, values, att_matrix_dict[0].shape, device=att_matrix_dict[0].device
+        )
+    else:
+        select_matrix = torch.zeros_like(att_matrix_dict[0])
+        select_matrix[ref_node, :] = 1
+
+    # Loop over the number of hops
+    for i in reversed(range(num_of_hops)):
+        # If it's the hightest hop, use the select matrix
+        if i == num_of_hops - 1:
+            if sparse:
+                result_matrix = select_matrix * att_matrix_dict[i]
+            else:
+                result_matrix = select_matrix * att_matrix_dict[i]
+        # If it's not the highest hop, use the correction matrix if it's provided
+        else:
+            if sparse:
+                # Cannot use index operation for sparse tensors
+                row_selector = torch.sparse_coo_tensor(
+                    torch.tensor([[0], [ref_node]]),
+                    torch.tensor([1.0]),
+                    (1, num_nodes),
+                    device=att_matrix_dict[0].device,
+                )
+                selected = torch.sparse.mm(
+                    row_selector, correction_matrix_dict[num_of_hops - i - 1]
+                )
+                # Identical operation as .expand_as but in sparse format
+                expanded = torch.vstack([selected] * att_matrix_dict[i].shape[1]).t()
+
+                result_matrix += expanded * att_matrix_dict[i]
+            else:
+                result_matrix += (
+                    correction_matrix_dict[num_of_hops - i - 1][ref_node, :]
+                    .expand_as(att_matrix_dict[i])
+                    .t()
+                    * att_matrix_dict[i]
+                )
+
+    return result_matrix
+
+
+def get_gatt_batch(
+    target_node,
+    model,
+    data,
+    sparse: bool = True,
+) -> Tuple[List[float], List[Tuple[int, int]]]:
+    num_hops = get_num_hops(model=model)
+    att_matrix_dict, correction_matrix_dict = prep_for_gatt(
+        model=model, data=data, num_hops=num_hops, sparse=sparse
+    )
+
+    edges_in_k_hop = return_edges_in_k_hop(
+        data=data,
+        target_idx=target_node,
+        hop=num_hops,
+        self_loops=True,
+        return_as_tensor=True,
+    )
+
+    gatt_matrix = gatt_batch(
+        ref_node=target_node,
+        num_of_hops=num_hops,
+        att_matrix_dict=att_matrix_dict,
+        correction_matrix_dict=correction_matrix_dict,
+        sparse=sparse,
+    )
+
+    if sparse:
+        gatt_list = [
+            gatt_matrix[edge[1], edge[0]].item() for edge in edges_in_k_hop.t()
+        ]
+    else:
+        gatt_list = gatt_matrix[edges_in_k_hop[1], edges_in_k_hop[0]].tolist()
+
+    return gatt_list, edges_in_k_hop
